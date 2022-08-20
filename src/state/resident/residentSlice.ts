@@ -49,16 +49,9 @@ const residentSlice = createSlice({
       .addMatcher(
         residentApi.endpoints.getResidents.matchFulfilled,
         (state, { payload }) => {
-          const residents = payload.map((res) => {
-            return {
-              id: res.id,
-              residentId: res.residentId,
-              roomNo: res.roomNo,
-              createdAt: res.createdAt,
-              updatedAt: res.updatedAt
-            };
-          });
-          state.residents = residents;
+          
+      
+          state.residents = payload;
         }
       );
   },

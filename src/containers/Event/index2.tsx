@@ -32,9 +32,7 @@ import { UploadPhotos } from "./UploadPhotos";
 import { UploadSongs } from "./UploadSongs";
 import { Typography } from "antd";
 
-const axiosInstance = axios.create({ baseURL: process.env.REACT_APP_STRAPI_URL, headers: {
-  'Authorization': `Bearer ${localStorage.getItem('token')}`
-}})
+const axiosInstance = axios.create({ baseURL: process.env.REACT_APP_API})
 export const Event = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -63,20 +61,32 @@ export const Event = () => {
           Description: description,
         }).unwrap();
         if (photos.length) {
-        
-          const formData = new FormData()
-          formData.append("ref", "api::event.event");
-          formData.append("refId", `${response.id}`);
-          formData.append("field", "Photos");
-          const result = await handleUpload(photos, formData);
+          const files = [];
+          Array.from(photos).forEach((file) => files.push(file.originFileObj));
+          console.log("Files: ", files)
+          const req: MediaRequest = {
+            files,
+            ref: "api::event.event",
+            refId: `${response.id}`,
+            field: "Photos",
+          };
+          console.log("Files2: ", req.files)
+          const result = await handleUpload(req);
         }
         if (songs.length) {
-          const formData = new FormData()
-          formData.append("ref", "api::event.event");
-          formData.append("refId", `${response.id}`);
-          formData.append("field", "Songs");
+          const files = [];
+          Array.from(songs).forEach((file) => files.push(file.originFileObj));
+          const req: MediaRequest = {
+            files,
+            ref: "api::event.event",
+            refId: `${response.id}`,
+            field: "Songs",
+          };
+          // formData.append("ref", "api::event.event");
+          // formData.append("refId", `${response.id}`);
+          // formData.append("field", "Songs");
 
-          const result = await handleUpload(songs, formData);
+          const result = await handleUpload(req);
         }
 
         refetch();
@@ -85,15 +95,15 @@ export const Event = () => {
       }
     }
   };
-  const handleUpload = async (files: UploadFile[], formData: FormData) => {
-    Array.from(files).forEach((file) =>
-      formData.append("files", file.originFileObj)
-    );
-    console.log("FormData: ", formData)
+  const handleUpload = async (req: MediaRequest) => {
+    // Array.from(files).forEach((file) =>
+    //   formData.append("files", file.originFileObj)
+    // );
+    // console.log("FormData: ", formData)
 
     try {
-      await axiosInstance.post("/api/upload", formData)
-      // console.log(response);
+      const response = await saveMedia(req).unwrap();
+      console.log(response);
     } catch (error) {
       console.log("Error: ", error);
     }

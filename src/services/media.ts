@@ -74,7 +74,7 @@ export const mediApi = createApi({
   tagTypes: ["FormData"],
   endpoints: (build) => ({
     saveMedia: build.mutation<number, Partial<MediaRequest>>({
-      query: ({ field, files, ref, refId }) => ({
+      query: (media) => ({
         document: gql`
           mutation UploadMediaMutation($media: FolderInput!) {
             readFiles(media: $media) {
@@ -83,10 +83,7 @@ export const mediApi = createApi({
           }
         `,
         variables: {
-          field,
-          files,
-          ref,
-          refId,
+          media
         },
       }),
       transformResponse: (response: MediaResponse) => response.readFiles.id,
