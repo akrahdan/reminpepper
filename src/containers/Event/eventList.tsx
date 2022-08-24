@@ -1,7 +1,7 @@
-import { EllipsisOutlined , PlusOutlined } from '@ant-design/icons' ;      
+import { ConsoleSqlOutlined, EllipsisOutlined , PlusOutlined } from '@ant-design/icons' ;      
 import type { ActionType , ProColumns } from '@ant-design/pro-components' ;       
 import { ProTable , TableDropdown } from '@ant-design/pro-components' ;      
-import { Button , Dropdown , Menu , Space , Tag } from 'antd' ;         
+import { Button , Dropdown , Menu , Space , Image, Avatar } from 'antd' ;         
 import { useEffect, useRef, useState } from 'react' ;   
 import request from 'umi-request' ;
 
@@ -21,9 +21,15 @@ const query = gql`
     allEvents {
       id
       title
+      resident {
+        id
+        residentId
+        roomNo
+      }
       description
       createdAt
       updatedAt
+      
     }
   }
 `
@@ -86,26 +92,21 @@ const columns : ProColumns < Event > [ ] = [
     disable : true , 
     title : 'Photos' , 
     dataIndex : 'photos' , 
-    filters : true , 
-    onFilter : true , 
-    ellipsis : true , 
-    valueType : 'select' , 
-    valueEnum : { 
-      all : { text : 'extra long'.repeat ( 50 ) } ,   
-      open : { 
-        text : 'unresolved' , 
-        status : 'Error' , 
-      } ,
-      closed : { 
-        text : 'resolved' , 
-        status : 'Success' , 
-        disabled : true , 
-      } ,
-      processing : { 
-        text : 'solving' , 
-        status : 'Processing' , 
-      } ,
-    } ,
+    search: false,
+    valueType: 'image',
+    key: 'photos',
+    renderFormItem: ( _, { defaultRender}) => {
+      return defaultRender(_)
+    },
+    render: (_, record) => (
+      <Space>
+       { record.photos?.map(({ url, name }) => (
+         <Avatar src={<Image style={{ width: 52}} key={name} src={`${process.env.REACT_APP_API}${url}`} />} />
+       ))}
+      </Space>
+    )
+    
+    
   } ,
   {
     disable : true , 
@@ -198,7 +199,7 @@ const menu = (
 
 export const EventList = ( { onOpen}: MembershipProps) => {  
     const {data: eventsQuery, refetch } = useGetEventsQuery()
-
+    console.log("DataEvent: ", eventsQuery)
     const selectedEvents = useAppSelector(selectEvents)
     const [events, setEvents] = useState<Event[]>()
 

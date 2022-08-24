@@ -1,22 +1,81 @@
 import { PageContainer } from "@ant-design/pro-components";
-import { Button, Input, Result, Tag } from "antd";
+import { Button, Input, Result, Tag, Typography } from "antd";
 import { Card, Col, Row, Space, Image } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMicrophone } from "@fortawesome/free-solid-svg-icons";
-import React, { useState } from "react";
+import Wave from "wave-visualizer";
+import React, { useEffect, useRef, useState } from "react";
+import type { Event } from "services/event";
+import { useAppSelector } from "store/hooks";
+import { selectEvents } from "state/event/eventSlice";
+import { useGetEventsQuery } from "services/event";
+import { Media } from "services/media";
 
 const { Meta } = Card;
+const { Title} = Typography
 
 export const Main = () => {
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState<number>(null);
+  const [wave] = useState(new Wave());
+  const [events, setEvents] = useState<Event[]>([]);
+  const [resident, setResident] = useState<String>('123')
+  const canvasEl = useRef(null);
+  const { data: eventsQuery } = useGetEventsQuery();
+  const selectedEvents = useAppSelector(selectEvents);
 
-  const [events, setEvents] = useState([]);
+  useEffect(() => {
+    const filteredEvents = selectedEvents.filter(ev => ev.resident.residentId == resident)
+    // console.log("Events: ", selectedEvents)
+    setEvents(filteredEvents);
+  }, [selectedEvents, resident]);
+
+  const renderImage = (photos: Media[] = []) => {
+    return photos.map((photo) => {
+      return (
+        <Image width={400} src={`${process.env.REACT_APP_API}${photo.url}`} />
+      );
+    });
+  };
+
+  const renderView = (events: Event[] = []) => {
+    return events.map((event) => {
+      return (
+        <Col span={6} style={{paddingTop: 16, paddingLeft: 20}}>
+          <Card
+            hoverable
+            style={{ width: 240, height: 400 }}
+            onClick={() => setVisible(event.id)}
+            cover={
+              <Image
+                width={240}
+                height= {320}
+                preview= {{visible: false}}
+                src={`${process.env.REACT_APP_API}${event.photos[0].url}`}
+              />
+            }
+          >
+            <Meta  title={<Title level={2}>{event.title}</Title>}  />
+          </Card>
+          <div style={{ display: "none" }}>
+            <Image.PreviewGroup
+              preview={{
+                visible: visible == event.id,
+                onVisibleChange: (vis) => setVisible(null),
+              }}
+            >
+              {renderImage(event.photos)}
+            </Image.PreviewGroup>
+          </div>
+        </Col>
+      );
+    });
+  };
 
   const renderEvents = (events = []) => {
     if (!events.length)
       return (
         <Space align="center" direction="vertical" size="large">
-          <FontAwesomeIcon fontSize={100} icon={faMicrophone} />
+          <canvas height={300} width="300" ref={canvasEl} />
         </Space>
       );
 
@@ -27,140 +86,8 @@ export const Main = () => {
         style={{ display: "flex", height: "100%", background: "#fff" }}
       >
         <Row gutter={16}>
-          <Col span={6}>
-            <Card
-              hoverable
-              style={{ width: 240 }}
-              onClick={() => setVisible(true)}
-              cover={
-                <img
-                  alt="example"
-                  src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-                />
-              }
-            >
-              <Meta title="Wedding" description="A great day at Minnesota" />
-            </Card>
-            <div style={{ display: "none" }}>
-              <Image.PreviewGroup
-                preview={{
-                  visible,
-                  onVisibleChange: (vis) => setVisible(vis),
-                }}
-              >
-                <Image src="https://gw.alipayobjects.com/zos/antfincdn/LlvErxo8H9/photo-1503185912284-5271ff81b9a8.webp" />
-                <Image src="https://gw.alipayobjects.com/zos/antfincdn/cV16ZqzMjW/photo-1473091540282-9b846e7965e3.webp" />
-                <Image src="https://gw.alipayobjects.com/zos/antfincdn/x43I27A55%26/photo-1438109491414-7198515b166b.webp" />
-              </Image.PreviewGroup>
-            </div>
-          </Col>
-
-          <Col span={6}>
-            <Card
-              hoverable
-              style={{ width: 240 }}
-              cover={
-                <img
-                  alt="example"
-                  src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-                />
-              }
-            >
-              <Meta title="Wedding" description="A great day at Minnesota" />
-            </Card>
-          </Col>
-
-          <Col span={6}>
-            <Card
-              hoverable
-              style={{ width: 240 }}
-              cover={
-                <img
-                  alt="example"
-                  src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-                />
-              }
-            >
-              <Meta title="Wedding" description="A great day at Minnesota" />
-            </Card>
-          </Col>
-
-          <Col span={6}>
-            <Card
-              hoverable
-              style={{ width: 240 }}
-              cover={
-                <img
-                  alt="example"
-                  src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-                />
-              }
-            >
-              <Meta title="Wedding" description="A great day at Minnesota" />
-            </Card>
-          </Col>
-        </Row>
-
-        <Row gutter={16}>
-          <Col span={6}>
-            <Card
-              hoverable
-              style={{ width: 240 }}
-              cover={
-                <img
-                  alt="example"
-                  src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-                />
-              }
-            >
-              <Meta title="Wedding" description="A great day at Minnesota" />
-            </Card>
-          </Col>
-
-          <Col span={6}>
-            <Card
-              hoverable
-              style={{ width: 240 }}
-              cover={
-                <img
-                  alt="example"
-                  src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-                />
-              }
-            >
-              <Meta title="Wedding" description="A great day at Minnesota" />
-            </Card>
-          </Col>
-
-          <Col span={6}>
-            <Card
-              hoverable
-              style={{ width: 240 }}
-              cover={
-                <img
-                  alt="example"
-                  src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-                />
-              }
-            >
-              <Meta title="Wedding" description="A great day at Minnesota" />
-            </Card>
-          </Col>
-
-          <Col span={6}>
-            <Card
-              hoverable
-              style={{ width: 240 }}
-              cover={
-                <img
-                  alt="example"
-                  src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png"
-                />
-              }
-            >
-              <Meta title="Wedding" description="A great day at Minnesota" />
-            </Card>
-          </Col>
+          {renderView(events)}
+          
         </Row>
       </Space>
     );

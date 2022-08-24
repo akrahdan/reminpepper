@@ -61,7 +61,7 @@ const eventSlice = createSlice({
       .addMatcher(
         eventApi.endpoints.getEvents.matchFulfilled,
         (state, { payload }) => {
-          
+          console.log("Events: ", payload)
           state.events = payload;
         }
       );

@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { graphqlRequestBaseQuery } from "@rtk-query/graphql-request-base-query";
 import { gql } from "graphql-request";
-
+import type { Resident } from "./resident";
 import { RootState } from "store";
 import type { MediaResponses, Media } from "./media";
 
@@ -10,7 +10,7 @@ export interface EventAttributes {
   attributes: {
     Title: string;
     Description: string;
-    resident: number;
+    
     Photos?: MediaResponses;
     Songs?: MediaResponses;
   };
@@ -18,15 +18,15 @@ export interface EventAttributes {
 
 export interface EventResponse {
   addEvent: Event;
-  getEvent: Event
-  allEvents: Event[]
-  updateEvent: Event
+  getEvent: Event;
+  allEvents: Event[];
+  updateEvent: Event;
 }
 
 export interface DeleteResponse {
   deleteEvent: {
-    id: number
-  }
+    id: number;
+  };
 }
 
 export interface EventResponses {
@@ -41,7 +41,7 @@ export interface EventRequest {
 
 export interface Event {
   title: string;
-  resident: number;
+  resident?: Resident;
   description: string;
   id?: number;
   photos?: Media[];
@@ -76,29 +76,34 @@ export const eventApi = createApi({
           }
         `,
         variables: {
-          event 
-        }
+          event,
+        },
       }),
       transformResponse: (response: EventResponse) => response.addEvent,
     }),
     getEvent: build.query<Event, number>({
       query: (id) => ({
         document: gql`
-         query GetEventQuery($id: int!) {
-           getEvent(id: $id) {
-            id
-            title
-            description
-           }
-         }
+          query GetEventQuery($id: int!) {
+            getEvent(id: $id) {
+              id
+              title
+              description
+              createdAt
+              updatedAt
+              photos {
+                id
+                url
+              }
+            }
+          }
         `,
 
         variables: {
-          id
-        }
-
+          id,
+        },
       }),
-      transformResponse: (response: EventResponse ) => response.getEvent
+      transformResponse: (response: EventResponse) => response.getEvent,
     }),
 
     getEvents: build.query<Event[], void>({
@@ -109,47 +114,57 @@ export const eventApi = createApi({
               id
               title
               description
+              createdAt
+              updatedAt
+              resident {
+                id
+                residentId
+                roomNo
+              }
+              photos {
+                id
+                name
+                url
+              }
             }
           }
         `,
-        
       }),
-      transformResponse: (response: EventResponse) => response.allEvents
+      transformResponse: (response: EventResponse) => response.allEvents,
     }),
 
     updateEvent: build.mutation<Event, number>({
       query: (id) => ({
         document: gql`
           mutation UpdateEventMutation($id: int!) {
-             updateEvent(id: $id) {
+            updateEvent(id: $id) {
               id
               title
               description
-             }
+            }
           }
         `,
         variables: {
-          id
-        }
+          id,
+        },
       }),
-      transformResponse: (response: EventResponse) => response.updateEvent
+      transformResponse: (response: EventResponse) => response.updateEvent,
     }),
 
     deleteEvent: build.mutation<number, number>({
       query: (id) => ({
         document: gql`
-         mutation  DeleteEventMutation($id: int) {
-          deleteEvent(id: $id) {
-            id
+          mutation DeleteEventMutation($id: int) {
+            deleteEvent(id: $id) {
+              id
+            }
           }
-         }
         `,
         varibles: {
-          id
-        }
+          id,
+        },
       }),
-      transformResponse: (response: DeleteResponse) => response.deleteEvent.id
-      
+      transformResponse: (response: DeleteResponse) => response.deleteEvent.id,
     }),
   }),
 });

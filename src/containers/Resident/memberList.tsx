@@ -188,7 +188,7 @@ export const MemberList = ( { onOpen}: MembershipProps) => {
         persistenceKey : 'pro-table-singe-demos' , 
         persistenceType : 'localStorage' , 
         onChange ( value ) { 
-          console.log ( 'value: ' , value ) ;
+          // console.log ( 'value: ' , value ) ;
         } ,
       } }
       rowKey = "id"
