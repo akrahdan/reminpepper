@@ -30,6 +30,7 @@
     "react-scripts": "5.0.1",
     "typescript": "^4.7.4",
     "umi-request": "^1.4.0",
+    "usehooks-ts": "^2.6.0",
     "wave-visualizer": "^1.0.6",
     "web-vitals": "^2.1.4"
   },

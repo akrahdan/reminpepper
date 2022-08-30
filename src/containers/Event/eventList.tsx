@@ -101,7 +101,7 @@ const columns : ProColumns < Event > [ ] = [
     render: (_, record) => (
       <Space>
        { record.photos?.map(({ url, name }) => (
-         <Avatar src={<Image style={{ width: 52}} key={name} src={`${process.env.REACT_APP_API}${url}`} />} />
+         <Avatar src={<Image style={{ width: 52}} key={name} src={`${url}`} />} />
        ))}
       </Space>
     )

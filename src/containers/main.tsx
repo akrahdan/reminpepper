@@ -1,8 +1,7 @@
 import { PageContainer } from "@ant-design/pro-components";
-import { Button, Input, Result, Tag, Typography } from "antd";
+import { Button, Input, Result, Tag, Typography, Spin } from "antd";
 import { Card, Col, Row, Space, Image } from "antd";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMicrophone } from "@fortawesome/free-solid-svg-icons";
+import { useInterval } from "usehooks-ts";
 import Wave from "wave-visualizer";
 import React, { useEffect, useRef, useState } from "react";
 import type { Event } from "services/event";
@@ -10,29 +9,65 @@ import { useAppSelector } from "store/hooks";
 import { selectEvents } from "state/event/eventSlice";
 import { useGetEventsQuery } from "services/event";
 import { Media } from "services/media";
+import { useAuthenticate } from "./Auth";
+
 
 const { Meta } = Card;
-const { Title} = Typography
+const { Title } = Typography;
 
 export const Main = () => {
   const [visible, setVisible] = useState<number>(null);
   const [wave] = useState(new Wave());
   const [events, setEvents] = useState<Event[]>([]);
-  const [resident, setResident] = useState<String>('123')
+  const [event, setEvent] = useState<Event>(null);
+  const [current, setCurrent] = useState<number>(0);
+  const [resident, setResident] = useState<String>("123");
   const canvasEl = useRef(null);
-  const { data: eventsQuery } = useGetEventsQuery();
+  const { data: eventsQuery, isLoading } = useGetEventsQuery();
   const selectedEvents = useAppSelector(selectEvents);
 
+  const { onLogout } = useAuthenticate()
+
   useEffect(() => {
-    const filteredEvents = selectedEvents.filter(ev => ev.resident.residentId == resident)
+    const filteredEvents = selectedEvents.filter(
+      (ev) => ev.resident.residentId == resident
+    );
     // console.log("Events: ", selectedEvents)
     setEvents(filteredEvents);
   }, [selectedEvents, resident]);
+  
+  // useInterval(() => {
+  //   const size = event ? event.photos?.length : 0;
+  //   console.log("Current: ", current)
+  //   if (current < size -1 ) {
+  //     setCurrent(current + 1)
+  //   } else {
+  //     setVisible(null)
+  //     setCurrent(0)
+  //     setEvent(null)
+      
+  //   }
+  // }, 
+  //   event ? 5000 : null,
+  
+  // )
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     const size = event ? event.photos?.length : 0;
+  //     // console.log("Work: ", event)
+  //     if (current < size - 1) {
+  //       console.log("Work: ", current)
+        
+  //       setCurrent((prevCurrent) => prevCurrent + 1);
+  //     }
+  //   }, 5000);
+  //   return () => clearInterval(interval)
+  // }, [event]);
 
   const renderImage = (photos: Media[] = []) => {
     return photos.map((photo) => {
       return (
-        <Image width={400} src={`${process.env.REACT_APP_API}${photo.url}`} />
+        <Image width={400} src={`${photo.url}`} />
       );
     });
   };
@@ -40,27 +75,39 @@ export const Main = () => {
   const renderView = (events: Event[] = []) => {
     return events.map((event) => {
       return (
-        <Col span={6} style={{paddingTop: 16, paddingLeft: 20}}>
+        <Col span={6} style={{ paddingTop: 16, paddingLeft: 20 }}>
           <Card
             hoverable
             style={{ width: 240, height: 400 }}
-            onClick={() => setVisible(event.id)}
+            onClick={() => {
+              setVisible(event.id);
+              setEvent(event);
+            }}
             cover={
               <Image
                 width={240}
-                height= {320}
-                preview= {{visible: false}}
-                src={`${process.env.REACT_APP_API}${event.photos[0].url}`}
+                height={320}
+                preview={{ visible: false }}
+                src={`${event.photos[0].url}`}
               />
             }
           >
-            <Meta  title={<Title level={2}>{event.title}</Title>}  />
+            <Meta title={<Title level={2}>{event.title}</Title>} />
           </Card>
           <div style={{ display: "none" }}>
             <Image.PreviewGroup
+              
               preview={{
                 visible: visible == event.id,
-                onVisibleChange: (vis) => setVisible(null),
+
+                current,
+                
+                onVisibleChange: (vis) => {
+                 
+                  setVisible(null);
+                  setEvent(null);
+                  setCurrent(0);
+                },
               }}
             >
               {renderImage(event.photos)}
@@ -72,12 +119,8 @@ export const Main = () => {
   };
 
   const renderEvents = (events = []) => {
-    if (!events.length)
-      return (
-        <Space align="center" direction="vertical" size="large">
-          <canvas height={300} width="300" ref={canvasEl} />
-        </Space>
-      );
+   
+    if (isLoading) return <Spin style={{ textAlign: 'center'}}/>
 
     return (
       <Space
@@ -85,10 +128,7 @@ export const Main = () => {
         size="large"
         style={{ display: "flex", height: "100%", background: "#fff" }}
       >
-        <Row gutter={16}>
-          {renderView(events)}
-          
-        </Row>
+        <Row gutter={16}>{renderView(events)}</Row>
       </Space>
     );
   };
@@ -118,7 +158,7 @@ export const Main = () => {
           }}
         />,
         // <Button key="3">操作一</Button>,
-        <Button key="2" type="primary">
+        <Button onClick={() => onLogout()} key="2" type="primary">
           Log Out
         </Button>,
       ]}
