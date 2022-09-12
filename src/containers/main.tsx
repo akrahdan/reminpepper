@@ -120,6 +120,7 @@ export const Main = () => {
       setEvent(null)
       memoryacc.pause();
       memoryacc.currentTime = 0;
+      askResident('more')
 
     }
   },
@@ -138,18 +139,7 @@ export const Main = () => {
       memoryacc.play()
     }
   }, [title])
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     const size = event ? event.photos?.length : 0;
-  //     // console.log("Work: ", event)
-  //     if (current < size - 1) {
-  //       console.log("Work: ", current)
 
-  //       setCurrent((prevCurrent) => prevCurrent + 1);
-  //     }
-  //   }, 5000);
-  //   return () => clearInterval(interval)
-  // }, [event]);
 
   const handleImageLoad = (index) => {
     if (index === events.length - 1) {
