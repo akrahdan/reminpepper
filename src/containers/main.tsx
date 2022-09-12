@@ -65,23 +65,23 @@ export const Main = () => {
     );
   };
 
-  const handleReminEvent = () => {
-    QiRoboService.subscribeToALMemoryEvent(
-      "KhanTherapy/Reminiscence",
-      (data) => {
-        setTimeout(() => {
-          QiRoboService.onService(
-            "ALMemory",
-            (ALMemory) => {
-              ALMemory.raiseEvent("yield", "audio_tour," + data);
-            },
-            1
-          );
-        });
-      },
-      null
-    );
-  };
+  // const handleReminEvent = () => {
+  //   QiRoboService.subscribeToALMemoryEvent(
+  //     "KhanTherapy/Reminiscence",
+  //     (data) => {
+  //       setTimeout(() => {
+  //         QiRoboService.onService(
+  //           "ALMemory",
+  //           (ALMemory) => {
+  //             ALMemory.raiseEvent("yield", "audio_tour," + data);
+  //           },
+  //           1
+  //         );
+  //       });
+  //     },
+  //     null
+  //   );
+  // };
   useEffect(() => {
     askResident("start");
     setIsLoaded((loaded) => !loaded);
@@ -92,7 +92,8 @@ export const Main = () => {
   useEffect(() => {
     setTimeout(() => {
       handleDialogueEvent();
-      handleReminEvent();
+      handleEventTitle();
+      // handleReminEvent();
     }, 2)
   }, [])
 
@@ -102,33 +103,33 @@ export const Main = () => {
     const filteredEvents = selectedEvents.filter(
       (ev) => ev.resident.residentId == resident
     );
-    handleEventTitle();
+   
     setEvents(filteredEvents);
   }, [selectedEvents, resident]);
 
-  // useInterval(() => {
-  //   const size = event ? event.photos?.length : 0;
+  useInterval(() => {
+    const size = event ? event.photos?.length : 0;
    
-  //   if (current < size -1 ) {
-  //     setCurrent(current + 1)
-  //   } else {
-  //     setVisible(null)
-  //     setCurrent(0)
-  //     setEvent(null)
+    if (current < size -1 ) {
+      setCurrent(current + 1)
+    } else {
+      setVisible(null)
+      setCurrent(0)
+      setEvent(null)
 
-  //   }
-  // },
-  //   event ? 5000 : null,
+    }
+  },
+    event ? 5000 : null,
 
-  // )
+  )
 
 
-  // useEffect(() => {
-  //   if(title) {
-  //     const event = events?.find(ev => ev.title.toLowerCase() === title.toLowerCase())
-  //     setEvent(event)
-  //   }
-  // }, [title])
+  useEffect(() => {
+    if(title) {
+      const event = events?.find(ev => ev.title.toLowerCase() === title.toLowerCase())
+      setEvent(event)
+    }
+  }, [title])
   // useEffect(() => {
   //   const interval = setInterval(() => {
   //     const size = event ? event.photos?.length : 0;
