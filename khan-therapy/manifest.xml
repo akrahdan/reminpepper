@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<package uuid="khan-therapy" version="0.0.7">
+ <names>
+  <name lang="en_US">Khan Therapy</name>
+  <name lang="en_US-x-scrald">Khan Therapy</name>
+ </names>
+ <descriptions>
+  <description lang="en_US">Reminiscence Therapy</description>
+  <description lang="en_US-x-scrald">Reminiscence Therapy</description>
+ </descriptions>
+ <supportedLanguages>
+  <language>en_US</language>
+ </supportedLanguages>
+ <descriptionLanguages>
+  <language>en_US</language>
+ </descriptionLanguages>
+ <contents>
+  <behaviorContent path=".">
+   <userRequestable/>
+   <nature>interactive</nature>
+   <triggerSentences>
+    <sentence lang="en_US">Khan Therapy</sentence>
+    <sentence lang="en_US">Reminiscence therapy</sentence>
+    <sentence lang="en_US-x-scrald">reminiscence</sentence>
+    <sentence lang="en_US-x-scrald">administer reminiscence</sentence>
+   </triggerSentences>
+   <permissions/>
+  </behaviorContent>
+  <behaviorContent path="reflexes/backbumper">
+   <nature></nature>
+   <permissions/>
+  </behaviorContent>
+  <behaviorContent path="reflexes/Lfrontbumper">
+   <nature></nature>
+   <permissions/>
+  </behaviorContent>
+  <behaviorContent path="reflexes/Lhand">
+   <nature></nature>
+   <permissions/>
+  </behaviorContent>
+  <behaviorContent path="reflexes/Rfrontbumper">
+   <nature></nature>
+   <permissions/>
+  </behaviorContent>
+  <behaviorContent path="reflexes/Rhand">
+   <nature></nature>
+   <permissions/>
+  </behaviorContent>
+  <behaviorContent path="reflexes/head">
+   <nature></nature>
+   <permissions/>
+  </behaviorContent>
+  <behaviorContent path="reflexes/tablet">
+   <nature></nature>
+   <permissions/>
+  </behaviorContent>
+  <behaviorContent path="animations/send_sms">
+   <nature></nature>
+   <permissions/>
+  </behaviorContent>
+  <behaviorContent path="greeter">
+   <nature></nature>
+   <permissions/>
+  </behaviorContent>
+  <behaviorContent path="animations/show_card">
+   <nature></nature>
+   <permissions/>
+  </behaviorContent>
+ </contents>
+ <requirements>
+  <naoqiRequirement minVersion="2.3"/>
+  <robotRequirement model="JULIETTE"/>
+ </requirements>
+ <services>
+  <service autorun="false" execStart="/usr/bin/python2 scripts/main.py" name="KhanTherapyService"/>
+ </services>
+</package>

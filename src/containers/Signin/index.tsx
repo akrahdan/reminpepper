@@ -53,7 +53,7 @@ export const Signin = () => {
         submitter={{
             onSubmit: handleSubmit
         }}
-        backgroundImageUrl={bgImg}
+        backgroundImageUrl='pepper.jpg'
         logo="https://github.githubassets.com/images/modules/logos_page/Octocat.png"
         title="DECRS"
         subTitle="Login into your account"
@@ -128,7 +128,7 @@ export const Signin = () => {
           }}
         ></div>
       </LoginFormPage>
-      <Button type="primary">Click {me}</Button>
+      
     </div>
   );
 };

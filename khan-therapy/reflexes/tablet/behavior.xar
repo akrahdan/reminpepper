@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ChoregrapheProject xmlns="http://www.aldebaran-robotics.com/schema/choregraphe/project.xsd" xar_version="3">
+    <Box name="root" id="-1" localization="8" tooltip="Root box of Choregraphe&apos;s behavior. Highest level possible." x="0" y="0">
+        <bitmap>media/images/box/root.png</bitmap>
+        <script language="4">
+            <content>
+                <![CDATA[]]>
+</content>
+        </script>
+        <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+        <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" />
+        <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
+        <Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="4" />
+        <Timeline enable="0">
+            <BehaviorLayer name="behavior_layer1">
+                <BehaviorKeyframe name="keyframe1" index="1">
+                    <Diagram>
+                        <Box name="reflex_tablet" id="4" localization="8" tooltip="" x="138" y="42">
+                            <bitmap>media/images/box/box-timeLine.png</bitmap>
+                            <script language="4">
+                                <content>
+                                    <![CDATA[]]>
+</content>
+                            </script>
+                            <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                            <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" />
+                            <Input name="onStop" type="1" type_size="1" nature="3" inner="0" tooltip="Box behavior stops when a signal is received on this input." id="3" />
+                            <Output name="onStopped" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="4" />
+                            <Timeline enable="1" fps="25" start_frame="1" end_frame="41" size="41">
+                                <BehaviorLayer name="behavior_layer1">
+                                    <BehaviorKeyframe name="keyframe8" index="8">
+                                        <Diagram>
+                                            <Box name="TurnOn" id="3" localization="8" tooltip="This box makes the robot blink once." x="127" y="46">
+                                                <bitmap>media/images/box/interaction/LED.png</bitmap>
+                                                <script language="4">
+                                                    <content>
+                                                        <![CDATA[import time
+class MyClass(GeneratedClass):
+    def __init__(self):
+        GeneratedClass.__init__(self, False)
+
+    def onLoad(self):
+        self.leds = ALProxy("ALLeds")
+
+    def onUnload(self):
+        #~ puts code for box cleanup here
+        pass
+
+    def onInput_onStart(self):
+        rDuration = 0.4
+        self.leds.fadeRGB( "FaceLeds", 0xffffff, rDuration )
+        self.onDone()]]>
+</content>
+                                                </script>
+                                                <Input name="onLoad" type="1" type_size="1" nature="0" inner="1" tooltip="Signal sent when diagram is loaded." id="1" />
+                                                <Input name="onStart" type="1" type_size="1" nature="2" inner="0" tooltip="Box behavior starts when a signal is received on this input." id="2" />
+                                                <Output name="onDone" type="1" type_size="1" nature="1" inner="0" tooltip="Signal sent when box behavior is finished." id="3" />
+                                            </Box>
+                                            <Link inputowner="3" indexofinput="2" outputowner="0" indexofoutput="1" />
+                                        </Diagram>
+                                    </BehaviorKeyframe>
+                                </BehaviorLayer>
+                                <ActuatorList model="">
+                                    <ActuatorCurve name="value" actuator="HeadPitch" mute="0" unit="0">
+                                        <Key frame="21" value="2.8">
+                                            <Tangent side="left" interpType="bezier" abscissaParam="-7" ordinateParam="0" />
+                                            <Tangent side="right" interpType="bezier" abscissaParam="11.2157" ordinateParam="-0.00112157" />
+                                        </Key>
+                                        <Key frame="37" value="-6.49024" />
+                                    </ActuatorCurve>
+                                    <ActuatorCurve name="value" actuator="HeadYaw" mute="0" unit="0">
+                                        <Key frame="12" value="0.615236" />
+                                        <Key frame="19" value="0.351564" />
+                                        <Key frame="31" value="0.615236" />
+                                    </ActuatorCurve>
+                                    <ActuatorCurve name="value" actuator="LHand" mute="0" unit="1">
+                                        <Key frame="4" value="0.510545" />
+                                        <Key frame="7" value="0.98" />
+                                        <Key frame="29" value="0.510545" />
+                                    </ActuatorCurve>
+                                    <ActuatorCurve name="value" actuator="RHand" mute="0" unit="1">
+                                        <Key frame="4" value="0.550088" />
+                                        <Key frame="7" value="0.98" />
+                                        <Key frame="29" value="0.550088" />
+                                    </ActuatorCurve>
+                                </ActuatorList>
+                            </Timeline>
+                            <Resource name="Head" type="Stop on demand" timeout="0" />
+                            <Resource name="LHand" type="Stop on demand" timeout="0" />
+                            <Resource name="RHand" type="Stop on demand" timeout="0" />
+                        </Box>
+                        <Link inputowner="4" indexofinput="2" outputowner="0" indexofoutput="2" />
+                        <Link inputowner="0" indexofinput="4" outputowner="4" indexofoutput="4" />
+                    </Diagram>
+                </BehaviorKeyframe>
+            </BehaviorLayer>
+        </Timeline>
+    </Box>
+</ChoregrapheProject>

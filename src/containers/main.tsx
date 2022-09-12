@@ -9,11 +9,13 @@ import { useAppSelector } from "store/hooks";
 import { selectEvents } from "state/event/eventSlice";
 import { useGetEventsQuery } from "services/event";
 import { Media } from "services/media";
+// import { RobotService } from "services/roboutils";
+import { QiRoboService } from "services/QIService";
 import { useAuthenticate } from "./Auth";
-
 
 const { Meta } = Card;
 const { Title } = Typography;
+const sound = new Audio("click.ogg");
 
 export const Main = () => {
   const [visible, setVisible] = useState<number>(null);
@@ -21,74 +23,161 @@ export const Main = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [event, setEvent] = useState<Event>(null);
   const [current, setCurrent] = useState<number>(0);
-  const [resident, setResident] = useState<String>("123");
+  const [resident, setResident] = useState<String>();
+  const [title, setTitle] = useState<string>();
   const canvasEl = useRef(null);
   const { data: eventsQuery, isLoading } = useGetEventsQuery();
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const selectedEvents = useAppSelector(selectEvents);
 
-  const { onLogout } = useAuthenticate()
+ 
+
+  const askResident = (text) => {
+    setTimeout(() => {
+      QiRoboService.onService(
+        "ALMemory",
+        (ALMemory) => {
+          ALMemory.raiseEvent("yield", "audio_tour," + text);
+        },
+        1
+      );
+    });
+  };
+
+  const handleDialogueEvent = () => {
+    QiRoboService.subscribeToALMemoryEvent(
+      "KhanTherapy/Resident",
+      (data) => {
+        setResident(data);
+      },
+      null
+    );
+  };
+
+
+  const handleEventTitle = () => {
+    QiRoboService.subscribeToALMemoryEvent(
+      "KhanTherapy/Event",
+      (data) => {
+        setTitle(data);
+      },
+      null
+    );
+  };
+
+  const handleReminEvent = () => {
+    QiRoboService.subscribeToALMemoryEvent(
+      "KhanTherapy/Reminiscence",
+      (data) => {
+        setTimeout(() => {
+          QiRoboService.onService(
+            "ALMemory",
+            (ALMemory) => {
+              ALMemory.raiseEvent("yield", "audio_tour," + data);
+            },
+            1
+          );
+        });
+      },
+      null
+    );
+  };
+  useEffect(() => {
+    askResident("start");
+    setIsLoaded((loaded) => !loaded);
+
+  }, []);
+
+
+  useEffect(() => {
+    setTimeout(() => {
+      handleDialogueEvent();
+      handleReminEvent();
+    }, 2)
+  }, [])
+
+  const { onLogout } = useAuthenticate();
 
   useEffect(() => {
     const filteredEvents = selectedEvents.filter(
       (ev) => ev.resident.residentId == resident
     );
-    // console.log("Events: ", selectedEvents)
+    handleEventTitle();
     setEvents(filteredEvents);
   }, [selectedEvents, resident]);
-  
+
   // useInterval(() => {
   //   const size = event ? event.photos?.length : 0;
-  //   console.log("Current: ", current)
+   
   //   if (current < size -1 ) {
   //     setCurrent(current + 1)
   //   } else {
   //     setVisible(null)
   //     setCurrent(0)
   //     setEvent(null)
-      
+
   //   }
-  // }, 
+  // },
   //   event ? 5000 : null,
-  
+
   // )
+
+
+  // useEffect(() => {
+  //   if(title) {
+  //     const event = events?.find(ev => ev.title.toLowerCase() === title.toLowerCase())
+  //     setEvent(event)
+  //   }
+  // }, [title])
   // useEffect(() => {
   //   const interval = setInterval(() => {
   //     const size = event ? event.photos?.length : 0;
   //     // console.log("Work: ", event)
   //     if (current < size - 1) {
   //       console.log("Work: ", current)
-        
+
   //       setCurrent((prevCurrent) => prevCurrent + 1);
   //     }
   //   }, 5000);
   //   return () => clearInterval(interval)
   // }, [event]);
 
+  const handleImageLoad = (index) => {
+    if (index === events.length - 1) {
+      setIsLoaded(true);
+    }
+  };
   const renderImage = (photos: Media[] = []) => {
-    return photos.map((photo) => {
-      return (
-        <Image width={400} src={`${photo.url}`} />
-      );
+    return photos.map((photo, index) => {
+      return <Image width={400} src={`${photo.url}`} />;
     });
   };
 
   const renderView = (events: Event[] = []) => {
-    return events.map((event) => {
+    return events.map((event, index) => {
       return (
         <Col span={6} style={{ paddingTop: 16, paddingLeft: 20 }}>
           <Card
             hoverable
             style={{ width: 240, height: 400 }}
-            onClick={() => {
+            onTouchStart={() => {
+              setTimeout(function () {
+                sound.play();
+              }, 1);
               setVisible(event.id);
               setEvent(event);
             }}
+            // onClick={() => {
+            //   setVisible(event.id);
+            //   setEvent(event);
+            // }}
             cover={
               <Image
                 width={240}
                 height={320}
                 preview={{ visible: false }}
                 src={`${event.photos[0].url}`}
+                onLoad={() => handleImageLoad(index)}
               />
             }
           >
@@ -96,14 +185,12 @@ export const Main = () => {
           </Card>
           <div style={{ display: "none" }}>
             <Image.PreviewGroup
-              
               preview={{
                 visible: visible == event.id,
 
                 current,
-                
+
                 onVisibleChange: (vis) => {
-                 
                   setVisible(null);
                   setEvent(null);
                   setCurrent(0);
@@ -119,8 +206,7 @@ export const Main = () => {
   };
 
   const renderEvents = (events = []) => {
-   
-    if (isLoading) return <Spin style={{ textAlign: 'center'}}/>
+    if (isLoading || !resident) return <Spin style={{ textAlign: "center" }} />;
 
     return (
       <Space
@@ -132,6 +218,7 @@ export const Main = () => {
       </Space>
     );
   };
+  // console.log("Resident: ", resident)
   return (
     <PageContainer
       onBack={() => null}

@@ -1,1 +1,8 @@
-declare var RobotUtils: any 
+export {}
+declare global {
+  interface Window {
+    RobotUtils: any;
+    QiSession: any
+  }
+}
+
