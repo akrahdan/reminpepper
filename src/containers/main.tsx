@@ -59,6 +59,7 @@ export const Main = () => {
     QiRoboService.subscribeToALMemoryEvent(
       "KhanTherapy/Event",
       (data) => {
+        console.log("Title: ", data)
         setTitle(data);
       },
       null
@@ -126,7 +127,10 @@ export const Main = () => {
 
   useEffect(() => {
     if(title) {
+      console.log("Inside Here")
       const event = events?.find(ev => ev.title.toLowerCase() === title.toLowerCase())
+      console.log("Event: ", event)
+      setVisible(event.id);
       setEvent(event)
     }
   }, [title])
