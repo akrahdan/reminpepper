@@ -16,6 +16,7 @@ import { useAuthenticate } from "./Auth";
 const { Meta } = Card;
 const { Title } = Typography;
 const sound = new Audio("click.ogg");
+const memoryacc = new Audio("dreaming.m4a")
 
 export const Main = () => {
   const [visible, setVisible] = useState<number>(null);
@@ -59,7 +60,7 @@ export const Main = () => {
     QiRoboService.subscribeToALMemoryEvent(
       "KhanTherapy/Event",
       (data) => {
-        console.log("Title: ", data)
+        
         setTitle(data);
       },
       null
@@ -117,6 +118,8 @@ export const Main = () => {
       setVisible(null)
       setCurrent(0)
       setEvent(null)
+      memoryacc.pause();
+      memoryacc.currentTime = 0;
 
     }
   },
@@ -127,11 +130,12 @@ export const Main = () => {
 
   useEffect(() => {
     if(title) {
-      console.log("Inside Here")
+      
       const event = events?.find(ev => ev.title.toLowerCase() === title.toLowerCase())
-      console.log("Event: ", event)
+      
       setVisible(event.id);
       setEvent(event)
+      memoryacc.play()
     }
   }, [title])
   // useEffect(() => {
