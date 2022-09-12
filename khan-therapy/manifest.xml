@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<package uuid="khan-therapy" version="0.0.7">
+<package version="0.0.7" uuid="khan-therapy">
  <names>
   <name lang="en_US">Khan Therapy</name>
   <name lang="en_US-x-scrald">Khan Therapy</name>

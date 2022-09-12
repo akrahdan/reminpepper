@@ -59,6 +59,8 @@ concept:(r_reminiscence) How about we talk about some of your past good memories
 concept:(r_request) What is your user id?
 concept:(r_confirm) Did I hear it right? 
 concept:(r_hear) Did I hear it right? 
+concept:(r_title) Now tell me: which event will you love to reminisce about?
+concept:(r_event_confirm) Is that correct?
 concept:(r_search) See what we've got, click or ask me if we have the product you are after.
 #Simply type in any product and see what we've got, or just ask me if we have it.
 concept:(r_scan) Let's take a look! ^start(boston_animation_library/Stand/rm_qrscanner) For more details on a product, show me its barcode. 
@@ -93,29 +95,35 @@ concept:(r_show_prod_q) ^rand[Want "Care" "Would you like"] to see the products 
 
 
 proposal: %start ~r_start
-    u1:([~im_good "I am good" "I am feeling good" good ])^rand["Glad to hear" ~happy_human]. Happy to hear that you are doing great. $KhanTherapy/Reminiscence=reminiscence
+    u1:([~im_good "I am good" "I am feeling good" good ])^rand["Glad to hear" ~happy_human]. Happy to hear that you are doing great. ^gotoReactivate(reminiscence)
     u1:([~im_ok ~i_dont_feel_good "I am sad" sad "{I am feeling}bad" not "Not so good" bad "I am not feeling good"])Oh, you are not feeling as good as I would want you to feel. $KhanTherapy/Request=no
 
    
 proposal: %reminiscence ~r_reminiscence
-    u2:(~yes)I will run the reminiscence app now.  $KhanTherapy/Reminiscence=req
+    u2:(~yes)I will run the reminiscence app now.  ^gotoReactivate(req)
     u2:(no)Oh sorry to hear that. I hope you feel better. 
 
 
 proposal: %req ~r_request
-    u3:(_*) $1 $KhanTherapy/Resident=$1  $KhanTherapy/Reminiscence=confirm
+    u3:(_*) $1 $KhanTherapy/Resident=$1  ^gotoReactivate(confirm)
     
 
 proposal: %confirm ~r_confirm
-    u4:(~yes)Great.
+    u4:(~yes)Great. ^gotoReactivate(title)
+    u4:(no) ^gotoReactivate(repeat)
 
 proposal: %hear ~r_hear
     u5:(~yes)Great.
-    u5: (no) $KhanTherapy/Reminiscence=repeat
+    u5: (no) ^gotoReactivate(repeat)
 
 proposal: %repeat Please repeat your resident id for me?
-    u6:(_*) $1 $KhanTherapy/Resident=$1 \pau=2000\ ^goto(hear) $KhanTherapy/Reminiscence=confirm
-  
+    u6:(_*) $1 $KhanTherapy/Resident=$1 \pau=2000\ ^gotoReactivate(hear)
+
+proposal: %title ~r_title
+    u1:(_*) $1 $KhanTherapy/Event=$1  ^gotoReactivate(event_confirm)
+
+proposal: %event_confirm ~r_event_confirm
+    u1:(~yes) Good to know
 
     
 ### Home screen options

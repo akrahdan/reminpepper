@@ -81,7 +81,6 @@
         <File name="index.e69db6d427cabb0d33a0" src="html/static/media/index.e69db6d427cabb0d33a0.less" />
         <File name="index.f2583e3d11d99f46dfed" src="html/static/media/index.f2583e3d11d99f46dfed.less" />
         <File name="index.f40673272480945eb1ba" src="html/static/media/index.f40673272480945eb1ba.less" />
-        <File name="pepper.0d933229a1f7ba9e37ba" src="html/static/media/pepper.0d933229a1f7ba9e37ba.jpg" />
         <File name="main" src="scripts/main.py" />
         <File name="__init__" src="scripts/butane/__init__.py" />
         <File name="conversation" src="scripts/butane/conversation.py" />
@@ -111,9 +110,10 @@
         <File name="socket.io.min" src="html/qimessaging/1.0/socket.io.min.js" />
         <File name="qimessaging" src="html/qimessaging/2/qimessaging.js" />
         <File name="click" src="html/click.ogg" />
-        <File name="main.6c372c7c" src="html/static/js/main.6c372c7c.js" />
-        <File name="main.6c372c7c.js.LICENSE" src="html/static/js/main.6c372c7c.js.LICENSE.txt" />
-        <File name="main.6c372c7c.js" src="html/static/js/main.6c372c7c.js.map" />
+        <File name="pepper" src="html/pepper.jpg" />
+        <File name="main.1cafb7bf" src="html/static/js/main.1cafb7bf.js" />
+        <File name="main.1cafb7bf.js.LICENSE" src="html/static/js/main.1cafb7bf.js.LICENSE.txt" />
+        <File name="main.1cafb7bf.js" src="html/static/js/main.1cafb7bf.js.map" />
     </Resources>
     <Topics>
         <Topic name="BestBuy_enu" src="dialog/BestBuy/BestBuy_enu.top" topicName="BestBuy" language="en_US" />
