@@ -111,9 +111,11 @@
         <File name="qimessaging" src="html/qimessaging/2/qimessaging.js" />
         <File name="click" src="html/click.ogg" />
         <File name="pepper" src="html/pepper.jpg" />
-        <File name="main.1cafb7bf" src="html/static/js/main.1cafb7bf.js" />
-        <File name="main.1cafb7bf.js.LICENSE" src="html/static/js/main.1cafb7bf.js.LICENSE.txt" />
-        <File name="main.1cafb7bf.js" src="html/static/js/main.1cafb7bf.js.map" />
+        <File name="dreaming" src="html/dreaming.m4a" />
+        <File name="moonrise" src="html/moonrise.m4a" />
+        <File name="main.a968e8f6" src="html/static/js/main.a968e8f6.js" />
+        <File name="main.a968e8f6.js.LICENSE" src="html/static/js/main.a968e8f6.js.LICENSE.txt" />
+        <File name="main.a968e8f6.js" src="html/static/js/main.a968e8f6.js.map" />
     </Resources>
     <Topics>
         <Topic name="BestBuy_enu" src="dialog/BestBuy/BestBuy_enu.top" topicName="BestBuy" language="en_US" />

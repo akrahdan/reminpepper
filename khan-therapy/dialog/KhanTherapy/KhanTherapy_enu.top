@@ -61,6 +61,7 @@ concept:(r_confirm) Did I hear it right?
 concept:(r_hear) Did I hear it right? 
 concept:(r_title) Now tell me: which event will you love to reminisce about?
 concept:(r_event_confirm) Is that correct?
+concept:(r_more) Is there any other event you want to reminisce about?
 concept:(r_search) See what we've got, click or ask me if we have the product you are after.
 #Simply type in any product and see what we've got, or just ask me if we have it.
 concept:(r_scan) Let's take a look! ^start(boston_animation_library/Stand/rm_qrscanner) For more details on a product, show me its barcode. 
@@ -124,6 +125,10 @@ proposal: %title ~r_title
 
 proposal: %event_confirm ~r_event_confirm
     u1:(~yes) Good to know
+
+proposal: %more ~r_more
+    u1: (~yes) Okay. ^gotoReactivate(title)
+    u1: (no) Well, nice talking to you. Good bye $onStopped=1
 
     
 ### Home screen options
