@@ -25,6 +25,7 @@ export const Main = () => {
   const [event, setEvent] = useState<Event>(null);
   const [current, setCurrent] = useState<number>(0);
   const [resident, setResident] = useState<String>();
+  const [start, setStart] = useState<string>("initial")
   const [title, setTitle] = useState<string>();
   const canvasEl = useRef(null);
   const { data: eventsQuery, isLoading } = useGetEventsQuery();
@@ -67,28 +68,12 @@ export const Main = () => {
     );
   };
 
-  // const handleReminEvent = () => {
-  //   QiRoboService.subscribeToALMemoryEvent(
-  //     "KhanTherapy/Reminiscence",
-  //     (data) => {
-  //       setTimeout(() => {
-  //         QiRoboService.onService(
-  //           "ALMemory",
-  //           (ALMemory) => {
-  //             ALMemory.raiseEvent("yield", "audio_tour," + data);
-  //           },
-  //           1
-  //         );
-  //       });
-  //     },
-  //     null
-  //   );
-  // };
+
   useEffect(() => {
     askResident("start");
     setIsLoaded((loaded) => !loaded);
-
-  }, []);
+    console.log("Started")
+  }, [start]);
 
 
   useEffect(() => {
