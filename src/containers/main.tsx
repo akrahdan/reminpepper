@@ -50,8 +50,8 @@ export const Main = () => {
     QiRoboService.subscribeToALMemoryEvent(
       "KhanTherapy/Resident",
       (data) => {
-        const num = wordsToNumbers(data, { fuzzy: true})
-        setResident(num as any);
+        const num = wordsToNumbers(data)
+        setResident(String(num));
       },
       null
     );

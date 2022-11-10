@@ -54,7 +54,7 @@ export const Signin = () => {
             onSubmit: handleSubmit
         }}
         backgroundImageUrl='pepper.jpg'
-        logo="https://github.githubassets.com/images/modules/logos_page/Octocat.png"
+        logo="Octocat.png"
         title="DECRS"
         subTitle="Login into your account"
         activityConfig={{
