@@ -115,8 +115,6 @@ export const Event = () => {
   return (
     <div>
       <PageContainer
-        onBack={() => null}
-        tags={<Tag color="blue">状态一</Tag>}
         header={{
           style: {
             padding: "4px 16px",

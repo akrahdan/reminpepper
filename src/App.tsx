@@ -6,7 +6,7 @@ import { Resident } from "containers/Resident";
 import { Home } from "containers/home";
 import { Signin } from "containers/Signin";
 import { Songs } from "containers/Songs";
-import { CrownOutlined, SmileOutlined, UserOutlined } from "@ant-design/icons";
+import { CalendarOutlined, CameraOutlined, SmileOutlined, UserOutlined } from "@ant-design/icons";
 import { PageContainer, ProLayout } from "@ant-design/pro-components";
 import { Avatar, Button, Input, Result, Tag } from "antd";
 import { useState } from "react";
@@ -32,7 +32,7 @@ const defaultProps = {
     {
       path: "#/",
       name: "Memories",
-      icon: <CrownOutlined />,
+      icon: <CameraOutlined />,
       // component: "./Welcome",
     },
     {
@@ -44,13 +44,13 @@ const defaultProps = {
     {
       path: "#/events",
       name: "Events",
-      icon: <UserOutlined />,
+      icon: <CalendarOutlined />,
       // component: "./Welcome",
     },
     {
       path: "#/residents",
       name: "Residents",
-      icon: <SmileOutlined />,
+      icon: <UserOutlined />,
       // component: "./Welcome",
     },
   ],

@@ -32,7 +32,8 @@
     "umi-request": "^1.4.0",
     "usehooks-ts": "^2.6.0",
     "wave-visualizer": "^1.0.6",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "words-to-numbers": "^1.5.1"
   },
   "scripts": {
     "start": "react-scripts start",

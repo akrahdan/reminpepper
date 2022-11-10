@@ -12,7 +12,7 @@ import { Media } from "services/media";
 // import { RobotService } from "services/roboutils";
 import { QiRoboService } from "services/QIService";
 import { useAuthenticate } from "./Auth";
-
+import wordsToNumbers from "words-to-numbers";
 const { Meta } = Card;
 const { Title } = Typography;
 const sound = new Audio("click.ogg");
@@ -50,7 +50,8 @@ export const Main = () => {
     QiRoboService.subscribeToALMemoryEvent(
       "KhanTherapy/Resident",
       (data) => {
-        setResident(data);
+        const num = wordsToNumbers(data, { fuzzy: true})
+        setResident(num as any);
       },
       null
     );
@@ -205,8 +206,7 @@ export const Main = () => {
   // console.log("Resident: ", resident)
   return (
     <PageContainer
-      onBack={() => null}
-      tags={<Tag color="blue">Welcome</Tag>}
+      
       header={{
         style: {
           padding: "4px 16px",
