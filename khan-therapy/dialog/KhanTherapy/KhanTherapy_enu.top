@@ -46,6 +46,8 @@ concept:(r_hear) Did I hear it right?
 concept:(r_title) Now tell me: which event will you love to reminisce about?
 concept:(r_event_confirm) Is that correct?
 concept:(r_more) Is there any other event you want to reminisce about?
+concept:(r_sorry) Sorry, I couldn't find the event you mentioned. Kindly select any of the events on the tablet.
+concept:(r_notfound) Sorry, there are no active events attached to the resident id. Kindly select from the list of events on the tablet.
 
 proposal: %start ~r_start
     u1:([~im_good "I am good" "I am feeling good" good ])^rand["Glad to hear" ~happy_human]. Happy to hear that you are doing great. ^gotoReactivate(reminiscence)
@@ -54,15 +56,15 @@ proposal: %start ~r_start
    
 proposal: %reminiscence ~r_reminiscence
     u1:(~yes)I will run the reminiscence app now.  ^gotoReactivate(req)
-    u1:(no)Oh sorry to hear that. I hope you feel better. 
+    u1:(no)Oh sorry to hear that. I hope you feel better. Let's run run the reminiscence to cheer you up. ^gotoReactivate(req)
 
 
 proposal: %req ~r_request
-    u1:(_*) $1 $KhanTherapy/Resident=$1  ^gotoReactivate(confirm)
+    u1:(_*) $1 $resident=$1 ^gotoReactivate(confirm)
     
 
 proposal: %confirm ~r_confirm
-    u1:(~yes)Great. ^gotoReactivate(title)
+    u1:(~yes)Great. $KhanTherapy/Resident=$resident ^gotoReactivate(title)
     u1:(no) ^gotoReactivate(repeat)
 
 proposal: %hear ~r_hear
@@ -77,6 +79,15 @@ proposal: %title ~r_title
 
 proposal: %event_confirm ~r_event_confirm
     u1:(~yes) Good to know
+
+proposal: %more ~r_more
+    u1:(~yes) Okay. ^gotoReactivate(title)
+    u1:(no) Well, nice talking to you. Good bye $onStopped=1
+
+proposal: %sorry ~r_sorry
+
+proposal: %notfound ~r_notfound
+
 
 
 

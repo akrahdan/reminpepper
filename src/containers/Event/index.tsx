@@ -1,14 +1,10 @@
-import { Avatar, Button, Empty, Input, Result, Tag, Modal } from "antd";
+import { Button, Input, Result, Tag, Modal } from "antd";
 import {
   PageContainer,
-  ProLayout,
-  ProFormUploadButton,
   ProFormTextArea,
-  trTRIntl,
   ProFormGroup,
 } from "@ant-design/pro-components";
 import { useState } from "react";
-import { PlusOutlined } from "@ant-design/icons";
 import {
   ModalForm,
   ProForm,
@@ -20,8 +16,7 @@ import { selectResidents } from "state/resident/residentSlice";
 import { useGetResidentsQuery } from "services/resident";
 import { useCreateEventMutation } from "services/event";
 import type { Resident } from "services/resident";
-import {  useSaveMediaMutation } from "services/media";
-import type { MediaRequest  } from "services/media";
+
 import axios from "axios";
 import { useAppSelector } from "store/hooks";
 import { useGetEventsQuery } from "services/event";
@@ -31,6 +26,7 @@ import { EventList } from "./eventList";
 import { UploadPhotos } from "./UploadPhotos";
 import { UploadSongs } from "./UploadSongs";
 import { Typography } from "antd";
+import { useSaveMediaMutation } from "services/media";
 
 const axiosInstance = axios.create({ baseURL: process.env.REACT_APP_STRAPI_URL, headers: {
   'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -108,7 +104,7 @@ export const Event = () => {
     setOptions(obj);
   }, [selectedResidents]);
 
-  const renderResidents = (residents = []) => {
+  const renderResidentEvents = (residents = []) => {
     return <EventList onOpen={() => setIsModalVisible(true)} />;
   };
 
@@ -147,7 +143,7 @@ export const Event = () => {
             height: "180vh",
           }}
         >
-          {renderResidents(residents)}
+          {renderResidentEvents(residents)}
 
           <ModalForm<{
             name: string;

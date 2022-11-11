@@ -4,7 +4,7 @@ import { Card, Col, Row, Space, Image } from "antd";
 import { useInterval } from "usehooks-ts";
 import Wave from "wave-visualizer";
 import React, { useEffect, useRef, useState } from "react";
-import type { Event } from "services/event";
+import type { Event, EventResponse } from "services/event";
 import { useAppSelector } from "store/hooks";
 import { selectEvents } from "state/event/eventSlice";
 import { useGetEventsQuery } from "services/event";
@@ -13,10 +13,36 @@ import { Media } from "services/media";
 import { QiRoboService } from "services/QIService";
 import { useAuthenticate } from "./Auth";
 import wordsToNumbers from "words-to-numbers";
+import { GraphQLClient, gql } from "graphql-request";
+
 const { Meta } = Card;
 const { Title } = Typography;
 const sound = new Audio("click.ogg");
 const memoryacc = new Audio("dreaming.m4a")
+
+const endpoint = process.env.REACT_APP_API_URL
+
+const client = new GraphQLClient(endpoint, {
+  headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}`}
+});
+
+const query = gql`
+  query GetEventsQluery {
+    allEvents {
+      id
+      title
+      resident {
+        id
+        residentId
+        roomNo
+      }
+      description
+      createdAt
+      updatedAt
+      
+    }
+  }
+`
 
 export const Main = () => {
   const [visible, setVisible] = useState<number>(null);
@@ -33,7 +59,7 @@ export const Main = () => {
   const selectedEvents = useAppSelector(selectEvents);
 
  
-
+  
   const askResident = (text) => {
     setTimeout(() => {
       QiRoboService.onService(
@@ -73,7 +99,7 @@ export const Main = () => {
   useEffect(() => {
     askResident("start");
     setIsLoaded((loaded) => !loaded);
-    console.log("Started")
+    
   }, [start]);
 
 
@@ -91,8 +117,24 @@ export const Main = () => {
     const filteredEvents = selectedEvents.filter(
       (ev) => ev.resident.residentId == resident
     );
+    if (filteredEvents?.length > 0) {
+      setEvents(filteredEvents);
+    } else {
+      const getEvents = async () => {
+        try {
+          const res = await client.request<EventResponse>(query)
+          setEvents(res.allEvents)
+          askResident("notfound")
+        } catch (error) {
+          console.log("Error: ", error)
+        }
+         
+      }
+      getEvents()
+      
+     
+    }
    
-    setEvents(filteredEvents);
   }, [selectedEvents, resident]);
 
   useInterval(() => {
@@ -119,10 +161,14 @@ export const Main = () => {
     if(title) {
       
       const event = events?.find(ev => ev.title.toLowerCase() === title.toLowerCase())
+      if (event)  {
+        setVisible(event.id);
+        setEvent(event)
+        memoryacc.play()
+      } else {
+        askResident('sorry')
+      }
       
-      setVisible(event.id);
-      setEvent(event)
-      memoryacc.play()
     }
   }, [title])
 

@@ -10,7 +10,6 @@ export interface EventAttributes {
   attributes: {
     Title: string;
     Description: string;
-    
     Photos?: MediaResponses;
     Songs?: MediaResponses;
   };
