@@ -5,6 +5,9 @@ import { useInterval } from "usehooks-ts";
 import Wave from "wave-visualizer";
 import React, { useEffect, useRef, useState } from "react";
 import type { Event, EventResponse } from "services/event";
+import type { Resident, ResidentResponses } from "services/resident";
+import { ResidentResponse, useGetResidentQuery, useGetResidentsQuery } from "services/resident";
+import { selectResidents } from "state/resident/residentSlice";
 import { useAppSelector } from "store/hooks";
 import { selectEvents } from "state/event/eventSlice";
 import { useGetEventsQuery } from "services/event";
@@ -58,6 +61,18 @@ export const Main = () => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const selectedEvents = useAppSelector(selectEvents);
 
+  //Residents
+  const [residents, setResidents] = useState<Resident[]>([]);
+  const { data: residentQuery } = useGetResidentsQuery();
+  
+  const selectedResidents = useAppSelector(selectResidents);
+
+  refetch()
+  
+  useEffect(() => {
+    setResidents(selectedResidents);
+  }, [selectedResidents]);
+
  
   
   const askResident = (text) => {
@@ -77,8 +92,16 @@ export const Main = () => {
       "KhanTherapy/Resident",
       (data) => {
         const num = wordsToNumbers(data)
-        refetch()
-        setResident(String(num));
+        const residentId = residents?.find(res => res.residentId == String(num))
+        if (residentId) {
+          setResident(String(num));
+        } else {
+          if (selectedEvents?.length > 0) {
+            setEvents(selectedEvents)
+          }
+          askResident("notfound")
+        }
+       
         
       },
       null
@@ -125,8 +148,7 @@ export const Main = () => {
       setEvents(filteredEvents);
     } else {
       
-      setEvents(selectedEvents)
-      askResident("notfound")
+    
     }
    
   }, [selectedEvents, resident]);
