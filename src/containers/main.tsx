@@ -77,8 +77,7 @@ export const Main = () => {
     setResidents(selectedResidents);
     if (selectedResidentId) {
       const resd = selectedResidents?.find(rd => rd.residentId === selectedResidentId)
-      alert('REsident'+ resd.residentId)
-
+      
       if(resd) {
         setResident(resd.residentId)
       } else {
