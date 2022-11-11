@@ -6,7 +6,11 @@ import Wave from "wave-visualizer";
 import React, { useEffect, useRef, useState } from "react";
 import type { Event, EventResponse } from "services/event";
 import type { Resident, ResidentResponses } from "services/resident";
-import { ResidentResponse, useGetResidentQuery, useGetResidentsQuery } from "services/resident";
+import {
+  ResidentResponse,
+  useGetResidentQuery,
+  useGetResidentsQuery,
+} from "services/resident";
 import { selectResidents } from "state/resident/residentSlice";
 import { useAppSelector } from "store/hooks";
 import { selectEvents } from "state/event/eventSlice";
@@ -21,12 +25,12 @@ import { GraphQLClient, gql } from "graphql-request";
 const { Meta } = Card;
 const { Title } = Typography;
 const sound = new Audio("click.ogg");
-const memoryacc = new Audio("dreaming.m4a")
+const memoryacc = new Audio("dreaming.m4a");
 
-const endpoint = process.env.REACT_APP_API_URL
+const endpoint = process.env.REACT_APP_API_URL;
 
 const client = new GraphQLClient(endpoint, {
-  headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}`}
+  headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
 });
 
 const query = gql`
@@ -42,10 +46,9 @@ const query = gql`
       description
       createdAt
       updatedAt
-      
     }
   }
-`
+`;
 
 export const Main = () => {
   const [visible, setVisible] = useState<number>(null);
@@ -54,7 +57,8 @@ export const Main = () => {
   const [event, setEvent] = useState<Event>(null);
   const [current, setCurrent] = useState<number>(0);
   const [resident, setResident] = useState<String>();
-  const [start, setStart] = useState<string>("initial")
+  const [selectedResidentId, setSelectedResidentId] = useState<String>()
+  const [start, setStart] = useState<string>("initial");
   const [title, setTitle] = useState<string>();
 
   const { data: eventsQuery, isLoading, refetch } = useGetEventsQuery();
@@ -64,17 +68,25 @@ export const Main = () => {
   //Residents
   const [residents, setResidents] = useState<Resident[]>([]);
   const { data: residentQuery } = useGetResidentsQuery();
-  
+
   const selectedResidents = useAppSelector(selectResidents);
 
-  refetch()
-  
+ 
+
   useEffect(() => {
     setResidents(selectedResidents);
-  }, [selectedResidents]);
+    if (selectedResidentId) {
+      const resd = selectedResidents?.find(rd => rd.residentId === selectedResidentId)
+      if(resd) {
+        setResident(resd.residentId)
+      } else {
+        
+        askResident("notfound")
+      }
+    }
 
- 
-  
+  }, [selectedResidents, selectedResidentId]);
+
   const askResident = (text) => {
     setTimeout(() => {
       QiRoboService.onService(
@@ -91,52 +103,36 @@ export const Main = () => {
     QiRoboService.subscribeToALMemoryEvent(
       "KhanTherapy/Resident",
       (data) => {
-        const num = wordsToNumbers(data)
-        const residentId = residents?.find(res => res.residentId == String(num))
-        if (residentId) {
-          setResident(String(num));
-        } else {
-          if (selectedEvents?.length > 0) {
-            setEvents(selectedEvents)
-          }
-          askResident("notfound")
-        }
+        const num = wordsToNumbers(data);
+        setSelectedResidentId(String(num));
        
-        
       },
       null
     );
   };
 
-
-
-
   const handleEventTitle = () => {
     QiRoboService.subscribeToALMemoryEvent(
       "KhanTherapy/Event",
       (data) => {
-        
         setTitle(data);
       },
       null
     );
   };
 
-
   useEffect(() => {
     askResident("start");
     setIsLoaded((loaded) => !loaded);
-    
   }, [start]);
-
 
   useEffect(() => {
     setTimeout(() => {
       handleDialogueEvent();
       handleEventTitle();
       // handleReminEvent();
-    }, 2)
-  }, [])
+    }, 2);
+  }, []);
 
   const { onLogout } = useAuthenticate();
 
@@ -147,47 +143,41 @@ export const Main = () => {
     if (filteredEvents?.length > 0) {
       setEvents(filteredEvents);
     } else {
-      
-    
     }
-   
   }, [selectedEvents, resident]);
 
-  useInterval(() => {
-    const size = event ? event.photos?.length : 0;
-   
-    if (current < size -1 ) {
-      setCurrent(current + 1)
-    } else {
-      setVisible(null)
-      setCurrent(0)
-      setEvent(null)
-      memoryacc.pause();
-      memoryacc.currentTime = 0;
-      askResident('more')
+  useInterval(
+    () => {
+      const size = event ? event.photos?.length : 0;
 
-    }
-  },
-    event ? 5000 : null,
-
-  )
-
+      if (current < size - 1) {
+        setCurrent(current + 1);
+      } else {
+        setVisible(null);
+        setCurrent(0);
+        setEvent(null);
+        memoryacc.pause();
+        memoryacc.currentTime = 0;
+        askResident("more");
+      }
+    },
+    event ? 5000 : null
+  );
 
   useEffect(() => {
-    if(title) {
-      
-      const event = events?.find(ev => ev.title.toLowerCase() === title.toLowerCase())
-      if (event)  {
+    if (title) {
+      const event = events?.find(
+        (ev) => ev.title.toLowerCase() === title.toLowerCase()
+      );
+      if (event) {
         setVisible(event.id);
-        setEvent(event)
-        memoryacc.play()
+        setEvent(event);
+        memoryacc.play();
       } else {
-        askResident('sorry')
+        askResident("sorry");
       }
-      
     }
-  }, [title])
-
+  }, [title]);
 
   const handleImageLoad = (index) => {
     if (index === events.length - 1) {
@@ -268,7 +258,6 @@ export const Main = () => {
   // console.log("Resident: ", resident)
   return (
     <PageContainer
-      
       header={{
         style: {
           padding: "4px 16px",
