@@ -51,12 +51,12 @@ concept:(r_notfound) Sorry, there are no active events attached to the resident 
 
 proposal: %start ~r_start
     u1:([~im_good "I am good" "I am feeling good" good ])^rand["Glad to hear" ~happy_human]. Happy to hear that you are doing great. ^gotoReactivate(reminiscence)
-    u1:([~im_ok ~i_dont_feel_good "I am sad" sad "{I am feeling}bad" not "Not so good" bad "I am not feeling good"])Oh, you are not feeling as good as I would want you to feel. $KhanTherapy/Request=no
+    u1:([~im_ok ~i_dont_feel_good "I am sad" sad "{I am feeling}bad" not "Not so good" bad "I am not feeling good"])Oh, you are not feeling as good as I would want you to feel. I will run the reminiscence therapy to cheer you up. ^gotoReactivate(reminiscence)
 
    
 proposal: %reminiscence ~r_reminiscence
     u1:(~yes)I will run the reminiscence app now.  ^gotoReactivate(req)
-    u1:(no)Oh sorry to hear that. I hope you feel better. Let's run run the reminiscence to cheer you up. ^gotoReactivate(req)
+    u1:(no) Oh sorry to hear that. I hope you feel better. Let's run run the reminiscence to cheer you up. ^gotoReactivate(req)
 
 
 proposal: %req ~r_request

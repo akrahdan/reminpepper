@@ -53,8 +53,8 @@ export const Main = () => {
   const [resident, setResident] = useState<String>();
   const [start, setStart] = useState<string>("initial")
   const [title, setTitle] = useState<string>();
-  const canvasEl = useRef(null);
-  const { data: eventsQuery, isLoading } = useGetEventsQuery();
+
+  const { data: eventsQuery, isLoading, refetch } = useGetEventsQuery();
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const selectedEvents = useAppSelector(selectEvents);
 
@@ -77,11 +77,15 @@ export const Main = () => {
       "KhanTherapy/Resident",
       (data) => {
         const num = wordsToNumbers(data)
+        refetch()
         setResident(String(num));
+        
       },
       null
     );
   };
+
+
 
 
   const handleEventTitle = () => {
@@ -120,19 +124,9 @@ export const Main = () => {
     if (filteredEvents?.length > 0) {
       setEvents(filteredEvents);
     } else {
-      const getEvents = async () => {
-        try {
-          const res = await client.request<EventResponse>(query)
-          setEvents(res.allEvents)
-          askResident("notfound")
-        } catch (error) {
-          console.log("Error: ", error)
-        }
-         
-      }
-      getEvents()
       
-     
+      setEvents(selectedEvents)
+      askResident("notfound")
     }
    
   }, [selectedEvents, resident]);
