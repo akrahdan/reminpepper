@@ -81,7 +81,7 @@ export const Main = () => {
       if(resd) {
         setResident(resd.residentId)
       } else {
-        
+        setEvents(selectedEvents)
         askResident("notfound")
       }
     }
