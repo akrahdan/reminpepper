@@ -10,6 +10,7 @@ import stk.runner
 import stk.events
 import stk.services
 import stk.logging
+import os
 from functools import partial
 
 __version__ = '0.0.4'
@@ -46,11 +47,12 @@ class KhanTherapy(object):
         self.events = stk.events.EventHelper(qiapp.session)
         self.s = stk.services.ServiceCache(qiapp.session)
         self.logger = stk.logging.get_logger(qiapp.session, self.APP_ID)
-
         try:
-            self.s.ALMemory.removeData('KhanTherapy/User')
-        except RuntimeError:
-            pass
+            os.popen("sudo systemctl start gunicorn.service")
+        
+        except OSError as e:
+            self.logger.warning("OsError: " + e)
+
         self.s.ALBarcodeReader.subscribe(self.PKG_ID)
 
         self.show_tablet()
