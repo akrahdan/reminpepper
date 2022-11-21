@@ -14,6 +14,7 @@ import type { User } from "services/auth";
 import { useLoginMutation } from "services/auth";
 import axios from "axios";
 import { url } from "inspector";
+import { QiRoboService } from "services/QIService";
 const AuthContext = React.createContext(null);
 
 export const AuthProvider = ({ children }) => {
@@ -27,8 +28,15 @@ export const AuthProvider = ({ children }) => {
       localStorage.removeItem("token");
 
       const response = await login({ identifier: email, password }).unwrap();
-      console.log("Response: ", response)
+
       localStorage.setItem("token", response.jwt);
+      QiRoboService.onService(
+        "ALMemory",
+        (ALMemory) => {
+          ALMemory.insertData("KhanTherapy/Token", response.jwt);
+        },
+        () => {}
+      );
 
       dispatch(setCredentials({ user: response, token: response.jwt }));
       const origin = (location.state as any)?.from?.pathname || "/";

@@ -3,7 +3,8 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { graphqlRequestBaseQuery } from "@rtk-query/graphql-request-base-query";
 import { gql } from "graphql-request";
 import { RootState } from "store";
-
+import { QiRoboService } from "./QIService";
+var userToken = ''
 export interface LoginRequest {
   identifier: string;
   password: string;
@@ -20,9 +21,15 @@ export interface UserResponse {
 }
 
 
+
+
 export interface CurrentUserResponse {
      currentUser: User;
   }
+
+QiRoboService.onService("ALMemory", async (ALMemory) => {
+ userToken = await ALMemory.getData("KhanTherapy/Token")
+}, () => {})
 
 export const authApi = createApi({
   reducerPath: "authApi",
@@ -30,7 +37,7 @@ export const authApi = createApi({
     url: process.env.REACT_APP_API_URL,
     prepareHeaders: (headers, { getState }) => {
       const token =
-        (getState() as RootState).auth.token || localStorage.getItem("token");
+        (getState() as RootState).auth.token || localStorage.getItem("token") || userToken;
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);
       }
